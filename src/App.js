@@ -1,25 +1,48 @@
-import logo from './logo.svg';
-import './App.css';
+import { useState } from "react";
 
-function App() {
+export default function App() {
+  const customDictionary = {
+    teh: "the",
+
+    wrok: "work",
+
+    fot: "for",
+
+    exampl: "example",
+  };
+  const [text, setText] = useState("");
+  const [suggestions, setSuggestions] = useState("");
+  const handleChange = (e) => {
+    let input = e.target.value;
+    setText(input);
+    const words = input.split(" ");
+    const corrected = words.map((item) => {
+      const correctedword = customDictionary[item.toLowerCase()];
+      return correctedword || item;
+    });
+    const correctedtext = corrected.join(" ");
+    const firstCorrection = corrected.find(
+      (word, index) => word !== words[index]
+    );
+
+    setSuggestions(firstCorrection || "");
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
+    <div>
+      <h1>Spell Check and Auto-Correction</h1>
+      <textarea
+        value={text}
+        onChange={handleChange}
+        placeholder="Enter text..."
+        rows={5}
+        cols={40}
+      />
+      {suggestions && (
         <p>
-          Edit <code>src/App.js</code> and save to reload.
+          Did you mean: <strong>{suggestions}</strong>?
         </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      )}
     </div>
   );
 }
-
-export default App;
